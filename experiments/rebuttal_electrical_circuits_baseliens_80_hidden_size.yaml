@@ -1,0 +1,77 @@
+seml:
+  executable: train.py
+  name: traffic_denoising_mixed_hpo
+  output_dir: /ceph/hdd/staff/fuchsgru/mel/seml_output
+  project_root_dir: ..
+  description: Electrical circuits, all tasks, baselines with hidden size 80, 4 layers.
+
+slurm:
+  - experiments_per_job: 4
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 4 # num cores
+      time: 0-24:00 # max time, D-HH:MM
+      partition: gpu_gtx1080
+      qos: deadline
+  - experiments_per_job: 12
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 16 # num cores
+      time: 0-24:00 # max time, D-HH:MM
+      partition: gpu_a100
+      qos: deadline
+
+grid:
+  +model.name:
+    type: choice
+    options:
+      - mlp
+      - line_graph_gnn
+      - directed_hodge_gnn
+      - equivariant_hodge_gnn
+      - concatenated_hodge_gnn
+
+  run_idx:
+    type: range
+    min: 0
+    max: 50
+    step: 1
+
+fixed:
+  +data.priority: 0
+  +model.priority: 1
+  model.hidden_dim: 80
+  model.num_layers: 4
+
+
+simulation:
+  fixed:
+    +data.name: electrical_circuits_simulation
+
+anaheim_simulation:
+  fixed:
+    +data.name: traffic_flow_simulation_anaheim
+    data.val_ratio: 0.1
+    data.test_ratio: 0.1
+  
+   
+chicago_simulation:
+  fixed:
+    +data.name: traffic_flow_simulation_chicago
+    data.val_ratio: 0.1
+    data.test_ratio: 0.1
+
+barcelona_simulation:
+  fixed:
+    +data.name: traffic_flow_simulation_barcelona
+    data.val_ratio: 0.1
+    data.test_ratio: 0.1
+
+winnipeg_simulation:
+  fixed:
+    +data.name: traffic_flow_simulation_winnipeg
+    data.val_ratio: 0.1
+    data.test_ratio: 0.1
+    

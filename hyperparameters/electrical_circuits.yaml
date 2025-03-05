@@ -1,0 +1,183 @@
+electrical-circuits-denoising:
+  concatenated_hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  directed_hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  edge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  equivariant_hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.01
+  hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.001
+  line_graph_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.01
+  magnetic_edge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mixed_edge_gnn_and_fusion:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mixed_magnetic_edge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 2
+    optimization.lr: 0.003
+  mixed_magnetic_edge_gnn_and_fusion:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.001
+  mixed_magnetic_edge_gnn_hidden_node_potentials_and_fusion:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mixed_magnetic_edge_gnn_hidden_node_potentials_both_and_fusion:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mlp:
+    model.hidden_dim: 32
+    model.num_layers: 2
+    optimization.lr: 0.03
+  rossi_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.003
+  transformer:
+    model.hidden_dim: 32
+    model.num_layers: 2
+    optimization.lr: 0.001
+electrical-circuits-interpolation:
+  concatenated_hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.01
+  directed_hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.01
+  edge_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.003
+  equivariant_hodge_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 2
+    optimization.lr: 0.03
+  hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.01
+  line_graph_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 3
+    optimization.lr: 0.003
+  magnetic_edge_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mixed_edge_gnn_and_fusion:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.01
+  mixed_magnetic_edge_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.03
+  mixed_magnetic_edge_gnn_and_fusion:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.01
+  mixed_magnetic_edge_gnn_hidden_node_potentials_and_fusion:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.01
+  mixed_magnetic_edge_gnn_hidden_node_potentials_both_and_fusion:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mlp:
+    model.hidden_dim: 32
+    model.num_layers: 2
+    optimization.lr: 0.001
+  rossi_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.003
+  transformer:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.01
+electrical-circuits-simulation:
+  concatenated_hodge_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  directed_hodge_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.01
+  edge_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.003
+  equivariant_hodge_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 3
+    optimization.lr: 0.01
+  hodge_gnn:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.03
+  line_graph_gnn:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.01
+  magnetic_edge_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 2
+    optimization.lr: 0.001
+  mixed_edge_gnn_and_fusion:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.01
+  mixed_magnetic_edge_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 3
+    optimization.lr: 0.03
+  mixed_magnetic_edge_gnn_and_fusion:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.01
+  mixed_magnetic_edge_gnn_hidden_node_potentials_and_fusion:
+    model.hidden_dim: 16
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mixed_magnetic_edge_gnn_hidden_node_potentials_both_and_fusion:
+    model.hidden_dim: 32
+    model.num_layers: 4
+    optimization.lr: 0.003
+  mlp:
+    model.hidden_dim: 32
+    model.num_layers: 3
+    optimization.lr: 0.001
+  rossi_gnn:
+    model.hidden_dim: 8
+    model.num_layers: 4
+    optimization.lr: 0.001
+  transformer:
+    model.hidden_dim: 32
+    model.num_layers: 3
+    optimization.lr: 0.003

@@ -1,0 +1,73 @@
+seml:
+  executable: train.py
+  name: traffic_denoising_mixed_hpo
+  output_dir: /ceph/hdd/staff/fuchsgru/mel/seml_output
+  project_root_dir: ..
+  description: Ablation on simulation.
+
+slurm:
+  - experiments_per_job: 4
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 4 # num cores
+      time: 0-24:00 # max time, D-HH:MM
+      partition: gpu_gtx1080
+      qos: deadline
+  - experiments_per_job: 12
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 16 # num cores
+      time: 0-24:00 # max time, D-HH:MM
+      partition: gpu_a100
+      qos: deadline
+
+grid:
+  +model.name:
+    type: choice
+    options:
+      - mixed_magnetic_edge_gnn_hidden_and_fusion
+  run_idx:
+    type: range
+    min: 0
+    max: 50
+    step: 1
+  +data.name:
+    type: choice
+    options:
+      # - traffic_flow_simulation_anaheim
+      # - traffic_flow_simulation_barcelona
+      # - traffic_flow_simulation_chicago
+      # - traffic_flow_simulation_winnipeg
+      # - electrical_circuits_simulation
+      # - random_walk_denoising
+      # - mixed_longest_cycle_identification
+      - typed_triangles_orientation
+
+fixed:
+  +data.priority: 0
+  +model.priority: 1
+  +hyperparameters.priority: 2
+  #+hyperparameters.name: traffic_flow_simulation_best_hyperparameters
+  #+hyperparameters.name: electrical_circuits_simulation_best_hyperparameters
+  #+hyperparameters.name: random_walk_denoising_best_hyperparameters
+  #+hyperparameters.name: mixed_longest_cycle_identification_best_hyperparameters
+  +hyperparameters.name: typed_triangles_orientation_best_hyperparameters
+
+no_q:
+  fixed:
+    model.q: 0
+
+no_fusion:
+  fixed:
+    model.use_fusion_layers: False
+
+no_mixing:
+  fixed:
+    model.invariant_to_equivariant: False
+    model.equvariant_to_invariant: False
+
+no_hidden:
+  fixed:
+    +model.name: mixed_magnetic_edge_gnn_and_fusion

@@ -1,0 +1,68 @@
+seml:
+  executable: train.py
+  name: traffic_denoising_mixed_hpo
+  output_dir: /ceph/hdd/staff/fuchsgru/mel/seml_output
+  project_root_dir: ..
+  description: All synthetic tasks, best hyperparamter configurations.
+
+slurm:
+  - experiments_per_job: 4
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 4 # num cores
+      time: 0-48:00 # max time, D-HH:MM
+      partition: gpu_gtx1080
+      qos: deadline
+  - experiments_per_job: 12
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 16 # num cores
+      time: 0-48:00 # max time, D-HH:MM
+      partition: gpu_a100
+      qos: deadline
+
+grid:
+  +model.name:
+    type: choice
+    options:
+      - mlp
+      - line_graph_gnn
+      - directed_hodge_gnn
+      - equivariant_hodge_gnn
+      - concatenated_hodge_gnn
+      - edge_gnn
+      - magnetic_edge_gnn
+      - mixed_magnetic_edge_gnn
+      - mixed_magnetic_edge_gnn_and_fusion
+      - mixed_magnetic_edge_gnn_hidden_and_fusion
+      - mixed_edge_gnn_and_fusion
+      - transformer
+      - dir_gnn
+
+  run_idx:
+    type: range
+    min: 0
+    max: 50
+    step: 1
+
+fixed:
+  +data.priority: 0
+  +model.priority: 1
+  +hyperparameters.priority: 2
+
+random_walk_denoising:
+  fixed:
+    +data.name: random_walk_denoising
+    +hyperparameters.name: random_walk_denoising_best_hyperparameters
+
+mixed_longest_cycle_identification:
+  fixed:
+    +data.name: mixed_longest_cycle_identification
+    +hyperparameters.name: mixed_longest_cycle_identification_best_hyperparameters
+
+typed_triangles_orientation:
+  fixed:
+    +data.name: typed_triangles_orientation
+    +hyperparameters.name: typed_triangles_orientation_best_hyperparameters

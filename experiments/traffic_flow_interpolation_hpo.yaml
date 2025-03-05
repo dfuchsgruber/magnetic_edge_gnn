@@ -1,0 +1,69 @@
+seml:
+  executable: train.py
+  name: traffic_interpolation_mixed_hpo
+  output_dir: /ceph/hdd/staff/fuchsgru/mel/seml_output
+  project_root_dir: ..
+  description: Traffic flow interpolation for ${config.data.name}, grid search.
+
+slurm:
+  - experiments_per_job: 12
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 4 # num cores
+      time: 0-72:00 # max time, D-HH:MM
+      partition: gpu_gtx1080
+  - experiments_per_job: 40
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 16 # num cores
+      time: 0-72:00 # max time, D-HH:MM
+      partition: gpu_a100
+
+grid:
+  +data:
+    type: choice
+    options:
+      - traffic_flow_interpolation_anaheim
+      - traffic_flow_interpolation_barcelona
+      - traffic_flow_interpolation_chicago
+      - traffic_flow_interpolation_winnipeg
+  +model:
+    type: choice
+    options:
+      - mlp
+      - line_graph_gnn
+      - hodge_gnn
+      - directed_hodge_gnn
+      - equivariant_hodge_gnn
+      - concatenated_hodge_gnn
+      - edge_gnn
+      - magnetic_edge_gnn
+      - mixed_magnetic_edge_gnn
+      - mixed_magnetic_edge_gnn_and_fusion
+      - mixed_magnetic_edge_gnn_hidden_and_fusion
+      - mixed_edge_gnn_and_fusion
+      - dir_gnn
+      - transformer
+      - mixed_magnetic_edge_gnn_hidden_both_and_fusion
+
+  optimization.lr:
+    type: choice
+    options: [3e-2, 1e-2, 3e-3, 1e-3]
+  model.hidden_dim:
+    type: choice
+    options: [8, 16, 32]
+  model.num_layers:
+    type: choice
+    options: [2, 3, 4]
+  run_idx:
+    type: choice
+    options: [0]
+
+fixed:
+  num_splits: 10
+  data.val_ratio: 0.1
+  data.test_ratio: 0.1
+
+

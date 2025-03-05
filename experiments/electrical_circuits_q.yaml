@@ -1,0 +1,64 @@
+seml:
+  executable: train.py
+  name: traffic_denoising_mixed_hpo
+  output_dir: /ceph/hdd/staff/fuchsgru/mel/seml_output
+  project_root_dir: ..
+  description: Electrical circuits, all tasks, best hyperparamter configurations, ablation regarding q.
+
+slurm:
+  - experiments_per_job: 4
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 4 # num cores
+      time: 0-24:00 # max time, D-HH:MM
+      partition: gpu_gtx1080
+      qos: deadline
+  - experiments_per_job: 12
+    sbatch_options:
+      gres: gpu:1 # num GPUs
+      mem: 64G # memory
+      cpus-per-task: 16 # num cores
+      time: 0-24:00 # max time, D-HH:MM
+      partition: gpu_a100
+      qos: deadline
+
+grid:
+  +model.name:
+    type: choice
+    options:
+      - magnetic_edge_gnn
+      - mixed_magnetic_edge_gnn
+      - mixed_magnetic_edge_gnn_and_fusion
+      - mixed_magnetic_edge_gnn_hidden_and_fusion
+
+  run_idx:
+    type: range
+    min: 0
+    max: 50
+    step: 1
+
+  model.q:
+    type: choice
+    options: [0.1, 1.0, 2.0, 0.5, 5.0, 10.0, 20.0, 100.0]
+
+fixed:
+  +data.priority: 0
+  +model.priority: 1
+  +hyperparameters.priority: 2
+
+
+denoising:
+  fixed:
+    +data.name: electrical_circuits_denoising
+    +hyperparameters.name: electrical_circuits_denoising_best_hyperparameters
+
+interpolation:
+  fixed:
+    +data.name: electrical_circuits_interpolation
+    +hyperparameters.name: electrical_circuits_interpolation_best_hyperparameters
+
+simulation:
+  fixed:
+    +data.name: electrical_circuits_simulation
+    +hyperparameters.name: electrical_circuits_simulation_best_hyperparameters
