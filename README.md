@@ -1,5 +1,4 @@
 # Graph Neural Networks for Edge Signals: Orientation Equivariance and Invariance
-<img src="overview.png" width="400">
 
 Reference implementation of our paper [Graph Neural Networks for Edge Signals: Orientation Equivariance and Invariance](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=K-egQS0AAAAJ&citation_for_view=K-egQS0AAAAJ:9yKSN-GCB0IC) by Dominik Fuchsgruber, Tim Postuvan, Stephan Günnemann and Simon Geisler pubished at ICLR 2025.
 

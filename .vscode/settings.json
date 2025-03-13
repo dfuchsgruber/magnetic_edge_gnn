@@ -1,6 +1,0 @@
-{
-    "python.analysis.exclude": [
-        "data/**",
-        "output/**"
-    ]
-}
