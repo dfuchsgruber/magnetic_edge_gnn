@@ -1,14 +1,21 @@
 """Unit tests for equivariance and invariance properties of the GNNs."""
 
+from dataclasses import dataclass
 from typing import Callable
 
 import torch
 import torch.nn as nn
-from dataclasses import dataclass
+
+from eign.block import (
+    EIGNBlockMagneticEdgeLaplacianConv,
+    EIGNBlockMagneticEdgeLaplacianWithNodeTransformationConv,
+)
+from eign.conv import (
+    MagneticEdgeLaplacianConv,
+    MagneticEdgeLaplacianWithNodeTransformationConv,
+)
 from eign.eign import EIGNLaplacianConv, EIGNLaplacianWithNodeTransformationConv
 from eign.laplacian import magnetic_edge_laplacian
-from eign.conv import MagneticEdgeLaplacianConv, MagneticEdgeLaplacianWithNodeTransformationConv
-from eign.block import EIGNBlockMagneticEdgeLaplacianConv, EIGNBlockMagneticEdgeLaplacianWithNodeTransformationConv
 
 
 @dataclass
@@ -22,9 +29,9 @@ class Graph:
 
     def __repr__(self):
         return (
-            f"Graph(n={self.num_nodes}, m={self.num_edges}, "
-            f"fraction_undirected={self.is_directed.float().mean()}, "
-            f"d={self.signed_edge_attr.size(1)})"
+            f'Graph(n={self.num_nodes}, m={self.num_edges}, '
+            f'fraction_undirected={self.is_directed.float().mean()}, '
+            f'd={self.signed_edge_attr.size(1)})'
         )
 
 
@@ -37,9 +44,7 @@ def random_graph(
     edge_idxs = torch.tensor(
         [
             list(edge)
-            for edge in set(
-                frozenset(e) for e in torch.randint(0, n, (m_max, 2)).tolist()
-            )
+            for edge in {frozenset(e) for e in torch.randint(0, n, (m_max, 2)).tolist()}
             if len(edge) > 1
         ],
         dtype=torch.long,
@@ -87,24 +92,24 @@ test_graphs = [
 
 
 def pytest_generate_tests(metafunc):
-    if "graph" in metafunc.fixturenames:
-        metafunc.parametrize("graph", test_graphs)
-    if "use_fusion" in metafunc.fixturenames:
-        metafunc.parametrize("use_fusion", [False, True])
-    if "use_signed_to_unsigned_conv" in metafunc.fixturenames:
-        metafunc.parametrize("use_signed_to_unsigned_conv", [False, True])
-    if "use_unsigned_to_signed_conv" in metafunc.fixturenames:
-        metafunc.parametrize("use_unsigned_to_signed_conv", [False, True])
-    if "signed_in" in metafunc.fixturenames:
-        metafunc.parametrize("signed_in", [False, True])
-    if "signed_out" in metafunc.fixturenames:
-        metafunc.parametrize("signed_out", [False, True])
-    if "q" in metafunc.fixturenames:
-        metafunc.parametrize("q", [0.0, 0.35, 1.0])
-    if "normalize" in metafunc.fixturenames:
-        metafunc.parametrize("normalize", [False, True])
-    if "use_residual" in metafunc.fixturenames:
-        metafunc.parametrize("use_residual", [False, True])
+    if 'graph' in metafunc.fixturenames:
+        metafunc.parametrize('graph', test_graphs)
+    if 'use_fusion' in metafunc.fixturenames:
+        metafunc.parametrize('use_fusion', [False, True])
+    if 'use_signed_to_unsigned_conv' in metafunc.fixturenames:
+        metafunc.parametrize('use_signed_to_unsigned_conv', [False, True])
+    if 'use_unsigned_to_signed_conv' in metafunc.fixturenames:
+        metafunc.parametrize('use_unsigned_to_signed_conv', [False, True])
+    if 'signed_in' in metafunc.fixturenames:
+        metafunc.parametrize('signed_in', [False, True])
+    if 'signed_out' in metafunc.fixturenames:
+        metafunc.parametrize('signed_out', [False, True])
+    if 'q' in metafunc.fixturenames:
+        metafunc.parametrize('q', [0.0, 0.35, 1.0])
+    if 'normalize' in metafunc.fixturenames:
+        metafunc.parametrize('normalize', [False, True])
+    if 'use_residual' in metafunc.fixturenames:
+        metafunc.parametrize('use_residual', [False, True])
 
 
 def _test_function_equivariance_and_invariance(
@@ -120,13 +125,13 @@ def _test_function_equivariance_and_invariance(
     out_signed_flipped[mask_flipped] = -out_signed_flipped[mask_flipped]
 
     # Assert equivariance
-    assert torch.allclose(out_signed, out_signed_flipped, atol=1e-4), (
-        f"No equivariant mapping, differences: {torch.abs(out_signed - out_signed_flipped).max():.3f}"
-    )
+    assert torch.allclose(
+        out_signed, out_signed_flipped, atol=1e-4
+    ), f'No equivariant mapping, differences: {torch.abs(out_signed - out_signed_flipped).max():.3f}'
     # Assert invariance
-    assert torch.allclose(out_unsigned, out_unsigned_flipped, atol=1e-4), (
-        f"No invariant mapping, differences: {torch.abs(out_unsigned - out_unsigned_flipped).max():.3f}"
-    )
+    assert torch.allclose(
+        out_unsigned, out_unsigned_flipped, atol=1e-4
+    ), f'No invariant mapping, differences: {torch.abs(out_unsigned - out_unsigned_flipped).max():.3f}'
 
 
 def test_laplacian_equivariance_and_invariance(
@@ -138,7 +143,12 @@ def test_laplacian_equivariance_and_invariance(
         else:
             edge_attr = g.unsigned_edge_attr
         laplacian = magnetic_edge_laplacian(
-            g.edge_idxs, g.is_directed, signed_in=signed_in, signed_out=signed_out, q=q
+            g.edge_idxs,
+            g.is_directed,
+            signed_in=signed_in,
+            signed_out=signed_out,
+            q=q,
+            return_incidence=False,
         )
         # Change the dtype of edge_attr to match the laplacian (in case of complex numbers)
         edge_attr = edge_attr.to(laplacian.dtype)
@@ -196,7 +206,8 @@ def test_laplacian_edge_conv_with_node_transformation_equivariance_and_invarianc
     model = MagneticEdgeLaplacianWithNodeTransformationConv(
         in_channels=in_channels,
         out_channels=2 * in_channels,
-        initialize_node_feature_transformation=lambda in_channels, out_channels: nn.Sequential(
+        initialize_node_feature_transformation=lambda in_channels,
+        out_channels: nn.Sequential(
             nn.Linear(in_channels, out_channels),
             nn.ReLU(),
             nn.Linear(out_channels, out_channels),
@@ -280,7 +291,8 @@ def test_eign_block_magnetic_edge_laplacian_with_node_transformation_conv_equiva
         use_signed_to_unsigned_conv=use_signed_to_unsigned_conv,
         q=q,
         normalize=normalize,
-        initialize_node_feature_transformation=lambda in_channels, out_channels: nn.Sequential(
+        initialize_node_feature_transformation=lambda in_channels,
+        out_channels: nn.Sequential(
             nn.Linear(in_channels, out_channels),
             nn.ReLU(),
             nn.Linear(out_channels, out_channels),
@@ -337,7 +349,6 @@ def test_eign_laplacian_conv_equivariance_and_invariance(
         return out_signed, out_unsigned
 
     _test_function_equivariance_and_invariance(f, graph)
-
 
 
 def test_eign_laplacian_with_node_transformation_conv_equivariance_and_invariance(

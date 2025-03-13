@@ -1,5 +1,7 @@
 """Laplacian operators for the Magnetic Edge GNN."""
 
+from typing import Literal, overload
+
 import numpy as np
 import torch
 from torch import Tensor
@@ -47,14 +49,36 @@ def magnetic_incidence_matrix(
     )
 
 
+@overload
 def magnetic_edge_laplacian(
     edge_index: Tensor,
     is_directed: Tensor,
+    return_incidence: Literal[False],
     num_nodes: int | None = None,
     q: float = 0.0,
     signed_in: bool = True,
     signed_out: bool = True,
+) -> Tensor: ...
+@overload
+def magnetic_edge_laplacian(
+    edge_index: Tensor,
+    is_directed: Tensor,
+    return_incidence: Literal[True],
+    num_nodes: int | None = None,
+    q: float = 0.0,
+    signed_in: bool = True,
+    signed_out: bool = True,
+) -> tuple[Tensor, Tensor, Tensor]: ...
+
+
+def magnetic_edge_laplacian(
+    edge_index: Tensor,
+    is_directed: Tensor,
     return_incidence: bool = False,
+    num_nodes: int | None = None,
+    q: float = 0.0,
+    signed_in: bool = True,
+    signed_out: bool = True,
 ) -> Tensor | tuple[Tensor, Tensor, Tensor]:
     """Compute the magnetic edge Laplacian for the graph.
 
@@ -107,7 +131,7 @@ def degree_normalization(
     """
     deg = torch.abs(matrix).sum(dim=-1).to_dense()
     deg_inv_sqrt = deg.pow(-0.5)
-    deg_inv_sqrt[deg_inv_sqrt == float("inf")] = 0
+    deg_inv_sqrt[deg_inv_sqrt == float('inf')] = 0
     normalized_matrix = (
         deg_inv_sqrt.reshape(-1, 1) * matrix * deg_inv_sqrt.reshape(1, -1)
     )

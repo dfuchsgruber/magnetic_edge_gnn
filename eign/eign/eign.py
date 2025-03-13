@@ -1,11 +1,11 @@
+from abc import abstractmethod
+from typing import NamedTuple
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 from eign.block import EIGNBlock
-
-
-from typing import NamedTuple
-from abc import abstractmethod
 
 
 class EIGNOutput(NamedTuple):
@@ -42,7 +42,7 @@ class EIGN(nn.Module):
 
         for _ in range(num_blocks):
             block = self.initialize_block(
-                in_channels_signed=_in_channels_signed,
+                in_channels_signed=_in_channels_signed,  # type: ignore
                 out_channels_signed=hidden_channels_signed,
                 in_channels_unsigned=_in_channels_unsigned,
                 out_channels_unsigned=hidden_channels_unsigned,
@@ -56,16 +56,18 @@ class EIGN(nn.Module):
 
         if self.out_channels_signed:
             self.signed_head = nn.Linear(
-                hidden_channels_signed, out_channels_signed, bias=False
+                hidden_channels_signed,
+                out_channels_signed,  # type: ignore
+                bias=False,
             )
         else:
-            self.register_buffer("signed_head", None)
+            self.register_buffer('signed_head', None)
         if self.out_channels_unsigned:
             self.unsigned_head = nn.Linear(
                 hidden_channels_unsigned, out_channels_unsigned, bias=False
             )
         else:
-            self.register_buffer("unsigned_head", None)
+            self.register_buffer('unsigned_head', None)
 
     @abstractmethod
     def initialize_block(
@@ -83,8 +85,8 @@ class EIGN(nn.Module):
 
     def forward(
         self,
-        x_signed: torch.Tensor,
-        x_unsigned: torch.Tensor,
+        x_signed: torch.Tensor | None,
+        x_unsigned: torch.Tensor | None,
         edge_index: torch.Tensor,
         is_directed: torch.Tensor,
         *args,

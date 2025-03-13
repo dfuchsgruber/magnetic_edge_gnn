@@ -12,17 +12,6 @@ repos:
           )$
       - id: check-added-large-files
       - id: trailing-whitespace
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.17.0
-    hooks:
-      - id: pyupgrade
-        name: pyupgrade
-        args: [--py38-plus]
-        exclude: .*\/__main__.py # typer doesn't supper PEP604 yet, so let's stick to the old typing
-      - id: pyupgrade
-        name: pyupgrade (__main__.py)
-        args: [--py38-plus, --keep-runtime-typing]
-        files: .*\/__main__.py # We run ruff after pyugprade to remove unused imports
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.1
     hooks:
@@ -36,4 +25,7 @@ repos:
     rev: v1.1.377
     hooks:
       - id: pyright
-        files: eign/.*\.py
+        files: eign/.*\.py|tests/.*\.py
+        additional_dependencies:
+          - torch
+          - numpy

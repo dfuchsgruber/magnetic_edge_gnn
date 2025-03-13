@@ -13,8 +13,6 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 
 dependencies = [
-    # PyTorch etc.
-    
 ]
 
 [project.optional-dependencies]
@@ -36,3 +34,10 @@ ignore = ['F722', 'F821']
 
 [tool.setuptools]
 packages = ["eign"]
+
+[tool.ruff.format]
+quote-style = "single"
+line-ending = "lf"
+
+[tool.pyright]
+typeCheckingMode = "standard"

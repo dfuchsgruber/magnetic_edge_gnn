@@ -1,4 +1,5 @@
 from abc import abstractmethod
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -166,7 +167,9 @@ class EIGNBlock(nn.Module):
         )
         return new_x_signed, new_x_unsigned
 
-    def _mix(self, tensor1: torch.Tensor, tensor2: torch.Tensor) -> torch.Tensor:
+    def _mix(
+        self, tensor1: torch.Tensor | None, tensor2: torch.Tensor | None
+    ) -> torch.Tensor | None:
         """Combines two tensors by element-wise addition if they are both not `None`."""
         match tensor1, tensor2:
             case None, None:
@@ -235,11 +238,11 @@ class EIGNBlock(nn.Module):
             )
 
         if h_signed_signed is None:
-            assert x_signed.size(-1) == 0
+            assert x_signed is None or x_signed.size(-1) == 0
             h_signed_signed = x_signed
 
         if h_unsigned_unsigned is None:
-            assert x_unsigned.size(-1) == 0
+            assert x_unsigned is None or x_unsigned.size(-1) == 0
             h_unsigned_unsigned = x_unsigned
 
         return h_signed_signed, h_unsigned_unsigned

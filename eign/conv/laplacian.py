@@ -3,7 +3,7 @@
 import torch
 import torch.nn as nn
 
-from eign.laplacian import magnetic_edge_laplacian, degree_normalization
+from eign.laplacian import degree_normalization, magnetic_edge_laplacian
 
 
 class MagneticEdgeLaplacianConv(nn.Module):
@@ -32,11 +32,11 @@ class MagneticEdgeLaplacianConv(nn.Module):
         q: float = 1.0,
     ):
         super().__init__()
-        assert out_channels % 2 == 0, (
-            "out_channels must be even to model a real and complex part"
-        )
+        assert (
+            out_channels % 2 == 0
+        ), 'out_channels must be even to model a real and complex part'
         if bias and signed_out:
-            raise ValueError("Bias is not supported for signed output")
+            raise ValueError('Bias is not supported for signed output')
         if bias is None:
             bias = not signed_out
 
@@ -51,7 +51,7 @@ class MagneticEdgeLaplacianConv(nn.Module):
         if bias:
             self.bias = nn.Parameter(torch.Tensor(out_channels))
         else:
-            self.register_parameter("bias", None)
+            self.register_parameter('bias', None)
 
         self.lin = nn.Linear(in_channels, out_channels, bias=False)
         self.reset_parameters()
@@ -71,6 +71,7 @@ class MagneticEdgeLaplacianConv(nn.Module):
             laplacian = magnetic_edge_laplacian(
                 edge_index,
                 is_directed,
+                return_incidence=False,
                 q=self.q,
                 signed_in=self.signed_in,
                 signed_out=self.signed_out,
