@@ -3,7 +3,7 @@ requires = ["setuptools>=61", "wheel", "numpy", "torch"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "magnetic_edge_gnn"
+name = "eign"
 dynamic = ["version"]
 authors = [
     { name = "Dominik Fuchsgruber", email = "d.fuchsgruber@tum.de" },
@@ -14,44 +14,7 @@ license = { text = "MIT" }
 
 dependencies = [
     # PyTorch etc.
-    "torchmetrics",
-    "torchvision",
-    "einops",
-    "typeguard <= 2.13.3", # we can not afford any more recent version, as it clashes with jaxtyped...
-    "jaxtyping",
-    "torch_geometric",
-    "omegaconf",
-    "pytorch-lightning",
-    "tabulate",
-
-    # General science & ml
-    "numpy",
-    "scipy",
-    "scikit-learn",
-    "pandas",
-
-    # Plotting & visualization
-    "matplotlib",
-    "seaborn",
-
-    # wandb
-    "wandb >= 0.13",
-
-    # Utilities
-    "tqdm",
-    "rich",
-    "ipython",
-    "ipdb",
-    "jupyterlab",
-    "ipympl",
-    "dacite",
-
-    "geopandas",
-    "verstack",
-    "tinydb",
-
-    # appropriate seml version
-    "seml",
+    
 ]
 
 [project.optional-dependencies]
@@ -72,4 +35,4 @@ ignore = ['F722', 'F821']
 [tool.ruff.lint.per-file-ignores]
 
 [tool.setuptools]
-packages = ["magnetic_edge_gnn"]
+packages = ["eign"]

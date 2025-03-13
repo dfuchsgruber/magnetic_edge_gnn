@@ -55,7 +55,7 @@ def magnetic_edge_laplacian(
     signed_in: bool = True,
     signed_out: bool = True,
     return_incidence: bool = False,
-) -> Tensor:
+) -> Tensor | tuple[Tensor, Tensor, Tensor]:
     """Compute the magnetic edge Laplacian for the graph.
 
     Args:
@@ -91,3 +91,27 @@ def magnetic_edge_laplacian(
     if return_incidence:
         return laplacian, incidence_in, incidence_out
     return laplacian
+
+
+def degree_normalization(
+    matrix: torch.Tensor, return_deg_inv_sqrt: bool = False
+) -> torch.Tensor | tuple[torch.Tensor, torch.Tensor]:
+    """
+    Normalizes the matrix based on the square roots of the out-degrees like GCN.
+
+    Args:
+        matrix (torch.Tensor): Matrix to normalize, shape [N, N].
+
+    Returns:
+        torch.Tensor: Degree normalized matrix.
+    """
+    deg = torch.abs(matrix).sum(dim=-1).to_dense()
+    deg_inv_sqrt = deg.pow(-0.5)
+    deg_inv_sqrt[deg_inv_sqrt == float("inf")] = 0
+    normalized_matrix = (
+        deg_inv_sqrt.reshape(-1, 1) * matrix * deg_inv_sqrt.reshape(1, -1)
+    )
+    if return_deg_inv_sqrt:
+        return normalized_matrix, deg_inv_sqrt
+    else:
+        return normalized_matrix
